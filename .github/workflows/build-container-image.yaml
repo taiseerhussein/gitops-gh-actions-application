@@ -10,7 +10,7 @@ concurrency:
   group: container-build
 
 jobs:
-  build-frontend-container:
+  build-container:
     runs-on: ubuntu-20.04
 
     outputs:
