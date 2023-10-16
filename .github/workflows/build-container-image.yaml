@@ -82,7 +82,7 @@ jobs:
             workflow_id: 'update-container-image.yaml',
             ref: 'main',
             inputs: {
-              message: '${{ github.event.head_commit.message }}'
+              message: '${{ github.event.head_commit.message }}',
               image: 'quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}'
             }
           })
