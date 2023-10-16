@@ -15,6 +15,7 @@ jobs:
 
     outputs:
       git-sha: ${{ steps.git-sha.outputs.sha }}
+      git-message: ${{ steps.git-message.outputs.message }}
 
     steps:
     - name: Checkout source code
@@ -23,6 +24,10 @@ jobs:
     - name: Set output for Git short SHA
       id: git-sha
       run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+
+    - name: Fetch latest commit message
+      id: git-message
+      run: echo "::set-output name=message::$(git log -1 --pretty=format:%s)"
 
     - name: Use Node.js 18.x
       uses: actions/setup-node@v3
@@ -82,7 +87,7 @@ jobs:
             workflow_id: 'update-container-image.yaml',
             ref: 'main',
             inputs: {
-              message: '${{ github.event.head_commit.message }}',
+              message: '${{ steps.git-message.outputs.message }}',
               image: 'quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}'
             }
           })
