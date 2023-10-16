@@ -1,0 +1,87 @@
+name: Build Container Image
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['**.js', '**.json' , 'public/**', 'views/**', 'Containerfile']
+  workflow_dispatch:
+
+concurrency:
+  group: container-build
+
+jobs:
+  build-frontend-container:
+    runs-on: ubuntu-20.04
+
+    outputs:
+      git-sha: ${{ steps.git-sha.outputs.sha }}
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Set output for Git short SHA
+      id: git-sha
+      run: echo "::set-output name=sha::$(git rev-parse --short HEAD)"
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+
+    - name: Login to quay.io
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+        registry: quay.io
+
+    # Create a file containing the SHA for this commit in the root of the projects
+    - name: Create file containing SHA
+      run: echo "${{ steps.git-sha.outputs.sha }}" > sha.txt
+
+    # Build the container image
+    - name: Build and push images to quay.io
+      uses: docker/build-push-action@v5
+      with:
+        context: ./
+        file: Containerfile
+        push: true
+        tags: |
+          quay.io/evanshortiss/gitops-and-actions:latest
+          quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}
+
+    # https://github.com/orgs/community/discussions/26323#discussioncomment-3251454
+    # Use the GitHub API to make an authenticated call that triggers a workflow
+    # in the manifests repository. The targeted workflow opens a PR to use the
+    # new image that was pushed to quay.io. A personal access token (PAT) is
+    # required to make the API call. The PAT can be created by a by visiting
+    # https://github.com/settings/personal-access-tokens/new, selecting the manifest
+    # repository, and then adding actions read/write permissions to the PAT
+    # 
+    # Set the PAT at https://github.com/USERNAME/THIS_REPO/settings/secrets/actions
+    # 
+    # You can manually trigger the action using curl
+    # curl -X POST \
+    # -H "Authorization: Bearer $PAT" \
+    # -H "Accept: application/vnd.github.v3+json" \
+    # https://api.github.com/repos/ORG_OR_USER/MANIFEST_REPO/actions/workflows/update-backend-image.yaml/dispatches \
+    # -d '{"ref":"main", "inputs": { "image": "foo" } }'
+    - name: Trigger update workflow in the manifests repository
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.PAT }}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: 'evanshortiss',
+            repo: 'gitops-gh-actions-manifests',
+            workflow_id: 'update-backend-image.yaml',
+            ref: 'main',
+            inputs: {
+              image: 'quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}'
+            }
+          })
