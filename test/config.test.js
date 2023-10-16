@@ -13,7 +13,7 @@ t.afterEach(() => {
   }
 })
 
-t.before(() => {
+t.beforeEach(() => {
   writeFileSync(SHA_PATH, SHA)
 })
 
