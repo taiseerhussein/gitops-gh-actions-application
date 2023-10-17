@@ -21,7 +21,7 @@ the */settings/secrets/actions* page of this repository.
 
 These variables are used in the [CI workflow](https://github.com/evanshortiss/gitops-gh-actions-application/blob/main/.github/workflows/build-container-image.yaml).
 
-The `QUAY_USERNAME` and `QUAY_PASSWORD` variables are credentials for a quay.io
+The `QUAY_USERNAME` and `QUAY_PASSWORD` variables are credentials for a [quay.io](https://quay.io/)
 Robot Account that will be used to push the container image to the quay.io 
 container registry. You can create a Robot Account and set permissions for Robot
 Accounts in your Account Settings on quay.io. You can use Docker Hub or another
