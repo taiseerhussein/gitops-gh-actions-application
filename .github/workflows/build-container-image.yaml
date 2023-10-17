@@ -88,6 +88,7 @@ jobs:
             ref: 'main',
             inputs: {
               message: '${{ steps.git-message.outputs.message }}',
-              image: 'quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}'
+              image: 'quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}',
+              sha: '${{ steps.git-sha.outputs.sha }}'
             }
           })
