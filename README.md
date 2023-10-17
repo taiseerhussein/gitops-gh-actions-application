@@ -17,7 +17,7 @@ the */settings/secrets/actions* page of the repository.
 
 * QUAY_USERNAME
 * QUAY_PASSWORD
-* PAT_TOKEN
+* PAT
 
 ## Local Development
 
