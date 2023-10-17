@@ -4,11 +4,11 @@ This repository works in concert with [this manifest repository](https://github.
 to create a continuous delivery pipeline with OpenShift GitOps (based on Argo CD).
 
 Code changes in this repository will trigger a workflow that builds this
-application into a container image. Once the build is complete, it will trigger
-a [workflow](https://github.com/evanshortiss/gitops-gh-actions-manifests/blob/main/.github/workflows/update-container-image.yaml)
-that creates a PR in the manifest repository that updates it to use the new
-container image. Merging this PR will automatically deploy the new container
-image on your OpenShift or Kubernetes cluster.
+application into a [container image hosted on quay.io](https://quay.io/repository/evanshortiss/gitops-and-actions?tab=tags).
+Once the build is complete, it will trigger a [workflow](https://github.com/evanshortiss/gitops-gh-actions-manifests/blob/main/.github/workflows/update-container-image.yaml)
+that creates a PR in the manifest repository that updates the [deployment manifests](https://github.com/evanshortiss/gitops-gh-actions-manifests/blob/main/helm/values.yaml#L4)
+to use the new container image tag. Merging that PR will automatically deploy the new
+container image on your OpenShift or Kubernetes cluster.
 
 ## Configure the Build
 
