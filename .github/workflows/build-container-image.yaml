@@ -57,8 +57,8 @@ jobs:
         file: Containerfile
         push: true
         tags: |
-          quay.io/evanshortiss/gitops-and-actions:latest
-          quay.io/evanshortiss/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}
+          quay.io/tkhussein/gitops-and-actions:latest
+          quay.io/tkhussein/gitops-and-actions:sha-${{ steps.git-sha.outputs.sha }}
 
     # https://github.com/orgs/community/discussions/26323#discussioncomment-3251454
     # Use the GitHub API to make an authenticated call that triggers a workflow
