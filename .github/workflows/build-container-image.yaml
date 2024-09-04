@@ -77,7 +77,7 @@ jobs:
     # https://api.github.com/repos/ORG_OR_USER/MANIFEST_REPO/actions/workflows/update-backend-image.yaml/dispatches \
     # -d '{"ref":"main", "inputs": { "image": "foo" } }'
     - name: Trigger update workflow in the manifests repository
-      uses: actions/github-script@main
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.PAT }}
         script: |
