@@ -82,7 +82,7 @@ jobs:
         github-token: ${{ secrets.PAT }}
         script: |
           await github.rest.actions.createWorkflowDispatch({
-            owner: 'evanshortiss',
+            owner: 'taiseerhussein',
             repo: 'gitops-gh-actions-manifests',
             workflow_id: 'update-container-image.yaml',
             ref: 'main',
